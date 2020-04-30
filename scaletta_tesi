@@ -1,0 +1,36 @@
+- Introduzione
+- Stato dell'arte
+  - Che cos'è il machine learning?
+  - Analisi sull'utilizzo degli assistenti vocali
+    - Assistenti vocali in ambito medico
+  - Triage
+    - Definizione di triage e trasformazione del suo significato
+    - Stato dell'arte del Triage all'ospedale maggiore di Parma
+    - Triage e COVID19
+- Assistenti vocali
+  - Funzionamento generale
+  - Rapporto con il ML
+- Mycroft
+  - Introduzione
+  - Stack di funzionamento
+  - Speech to Text
+    - STT di Google, bucketized per la privacy
+      - Perché la privacy in ambito ospedaliero è così importante
+  - Riconoscimento degli intent
+    - Padatious vs. Adapt
+  - Text To Speech
+  - GUI
+- Realizzazione di Skills
+  - Intents e Padatious
+  - Metodi di gestione skills
+  - Utilizzo dei decorators
+  - Multilingua
+  - Sviluppo della GUI
+  - Output della scheda medica 
+  - Possibilità di inference sui dati dei sintomi
+- Applicabilità
+  - Requisiti tecnici
+  - Possibilità di sperimentazione in ospedale
+  - Feedback/Test??
+- Conclusioni
+
