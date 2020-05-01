@@ -1,5 +1,5 @@
 import os
-import suca
+import pandas as pd
 
 print "hello world!"
 print "see ya world!"

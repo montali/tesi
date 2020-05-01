@@ -96,16 +96,17 @@
 
 % INFORMAZIONI PDF - PERSONALIZZARE
 \pdfinfo{%
-  /Title    (Senza carta igienica)
-  /Author   (Tinaso de Tinasis)
-  /Subject  (Un trattato di toccante urgenza)
-  /Keywords (LaTeXi carta igienica urgenza Politecnico Presicce)
+  /Title    (Realizzazione di un assistente vocale per il triage ospedaliero)
+  /Author   (Simone Montali)
+  /Subject  (Triage semi-automatizzato per la sicurezza e la tempestività)
+  /Keywords (Triage ML Mycroft Ospedale Hospital)
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % LISTA DEI CAPITOLI DA INCLUDERE - PERSONALIZZARE
 \includeonly{%
+introduzione,%
 chap_qui,%
 chap_quo,%
 chap_qua,%
@@ -126,7 +127,7 @@ app_a,%
 % ELIMINATE LE VOCI CHE NON VI SERVONO
 
 % UNIVERSITA - NOME
-\ateneo{Politecnico di Presicce}
+\ateneo{Università degli studi di Parma}
 
 % FACOLTA - DICITURA - CANCELLARE O DECOMMENTARE
 %\FacoltaDi{Faculty of}
@@ -136,46 +137,36 @@ app_a,%
 % CORSO DI LAUREA - DICITURA (MANTENERE LO SPAZIO) - CANCELLARE O DECOMMENTARE
 %\CorsoDiLaureaIn{Master of Science in }
 % CORSO DI LAUREA - NOME
-\corsodilaurea{Ortodonzia Bovina}
+\corsodilaurea{Ingegneria dei Sistemi Informativi}
 
 % TIPOLOGIA TESI
-\TesiDiLaurea{Tesi di Laurea Magistrale}
+\TesiDiLaurea{Tesi di Laurea di primo livello}
 
 % TITOLO
-\titolo{Senza carta igienica}
+\titolo{Realizzazione di un assistente vocale per il triage ospedaliero}
 
 % SOTTOTITOLO
-\sottotitolo{Un trattato di toccante urgenza}
+\sottotitolo{Triage semi-automatizzato per la sicurezza e la tempestività}
 
 % RELATORE/I - DICITURA - CANCELLARE SE UN SOLO RELATORE
 %\AdvisorName{Relatori}
 % RELATORE - PROF. NOME E COGNOME
-\relatore{prof.\ Darth Vader}
+\relatore{prof.ssa\ Mordonini Monica}
 % RELATORE AGGIUNTIVO - PROF NOME E COGNOME
 % SE SI HA SOLO UN RELATORE ELIMINARE INSIEME AD AdvisorName
-\secondorelatore{prof.\ Neo Cortex}
-
-% TUTORE AZIENDALE - TITOLO NOME E COGNOME
-\tutoreaziendale{Ing. Carlino Cane}
-% TUTORE AZIENDALE - DICITURA//AZIENDA
-\NomeTutoreAziendale{Tutore Aziendale\\FeelGood Inc}
-
+\secondorelatore{prof.\ Tomaiuolo Michele}
+\terzorelatore{prof.\ Angiani Giulio}
 % CANDIDATO - DICITURA (MANTENERE I DUE PUNTI) - CANCELLARE O DECOMMENTARE
 %\CandidateName{Candidate:}
 
 % CANDIDATO - NOME E COGNOME
-\candidato{Tinaso de Tinasis}
-% CANDIDATA - ELIMINARE O SOSTITUIRE CON IL PRECEDENTE
-%\candidata{Tinasa de Tinasis} 
-% SECONDO CANDIDATO - ELIMINARE O DECOMMENTARE
-%secondocandidato{Bombo de Bombis}
-%secondacandidata{Bomba de Bombis}
+\candidato{Simone Montali}
 
 % LOGO UNIVERSITA
 \logosede{images/logo}
 
 % DATA - MESE ANNO
-\sedutadilaurea{Settembre 1984}
+\sedutadilaurea{Probabilmente 2020}
 
 \frontespizio
 
@@ -194,7 +185,7 @@ app_a,%
 \vspace*{\stretch{1}}
 \begin{flushright}
 \noindent
-All'amato me stesso
+Dedica toccante.
 \end{flushright}
 \vspace*{\stretch{6}}
 \cleardoublepage
@@ -236,7 +227,7 @@ Piacere, sommario.
 \listoffigures
 
 % INDICE DELLE TABELLE
-\listoftables
+%\listoftables
 
 % INDICE DEI CODICI
 \listofcodes
@@ -246,6 +237,7 @@ Piacere, sommario.
 \mainmatter
 
 % INCLUSIONE FILE CAPITOLI - PERSONALIZZARE - TENERE COERENTE CON LISTA IN ALTO
+\include{introduzione}
 \include{chap_qui}
 \include{chap_quo}
 \include{chap_qua}
