@@ -1,6 +1,7 @@
 - Introduzione
 - Stato dell'arte
   - Che cos'è il machine learning?
+    - Neural Networks
   - Analisi sull'utilizzo degli assistenti vocali
     - Assistenti vocali in ambito medico
   - Triage
@@ -31,5 +32,11 @@
   - Requisiti tecnici
   - Possibilità di sperimentazione in ospedale
   - Feedback/Test??
+- Possibilità di inference sulle conversazioni
+  - Classificazione del testo
+    - Dataset di trascrizioni
+    - Vettorizzazione del testo
+    - Allenamento di una rete neurale
+    - Inference
 - Conclusioni
 

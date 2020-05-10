@@ -12,6 +12,33 @@ in cui i punti rossi sono email spam, e quelli blu no, trovare una funzione che 
 approssimi al meglio $y$. Per fare ciò, procediamo per iterazioni: partiremo con dei pesi arbitrari, calcolando $y$ per ogni esempio (già etichettato) fornito, e ne calcoleremo l'errore rispetto alla $y$ reale. Potremo quindi calcolare il gradiente (ossia la somma delle derivate parziali sui rispettivi pesi) della funzione che lega l'errore ai pesi $w_i$, ottenendone un'informazione fondamentale: indicherà infatti la direzione nella quale la funzione errore è decrescente. Ci potremo quindi spostare, di una quantità pari al \textit{learning rate} (uno degli iperparametri definiti arbitrariamente), nella direzione di diminuzione dell'errore. Scegliere un corretto \textit{learning rate} è una parte fondamentale dello sviluppo dell'algoritmo di ML: se è troppo piccolo, la soluzione richiederà troppo tempo, se troppo grande, la soluzione non sarà abbastanza precisa. Dopo un sufficiente numero di esecuzioni dell'algoritmo, il nostro grafico avrà ora questo aspetto:
 % TODO: Grafico categorizzato
 e saremo quindi in grado di determinare, con una determinata \textit{accuracy}, l'appartenenza di un esempio ad una classe o all'altra.
+\subsection{Reti neurali}
+Per illustrare il concetto di rete neurale, produciamo anzitutto un grafico del modello lineare appena definito.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\columnwidth]{images/stateofart/linear-NN.png}
+    \end{center}
+    \caption{Modello lineare}
+    \label{fig:linear-NN}
+\end{figure}
+Ogni cerchio blu rappresenta una feature, ed il cerchio verde rappresenta la somma pesata degli input. Vorremmo che questo modello fosse in grado di approssimare anche problemi non-lineari. Potremmo quindi decidere di inserire un nuovo strato di valori intermedi, ottenendo un modello così composto:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\columnwidth]{images/stateofart/double-linear-NN.png}
+    \end{center}
+    \caption{Modello a 2 strati, ancora lineare}
+    \label{fig:double-linear-NN}
+\end{figure}
+c'è, però, un problema: essendo questo ancora un modello lineare, è possibile semplificarlo, ottenendo il primo grafico. È utile, allora, inserire una non-linearità all'interno del modello, che chiameremo \textit{funzione di attivazione}: ora avremo, oltre ai layer lineari, una funzione tra di loro non lineare. Grazie a essa, l'aggiunta di nuovi strati è diventata significativa: non sarebbe più possibile semplificare il sistema ad uno lineare.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\columnwidth]{images/stateofart/real-NN.png}
+    \end{center}
+    \caption{Rete neurale}
+    \label{fig:real-NN}
+\end{figure}
+Tra le funzioni di attivazione, citiamo la funzione sigmoidea $F(x)=\frac{1}{1+e^{-x}}$, o la \textit{Rectified Linear Unit} (ReLU) $F(x)=max(0,x)$. Non esiste una funzione di attivazione più corretta delle altre: ogni problema avrà una configurazione dei layer e delle loro attivazioni diversa. Trovare la configurazione corretta della rete neurale è la sfida più grande nel lavoro di \textit{data analysis}. \\
+Avremo ora quindi un modello capace di ottenere degli output date le input features. Ma come possiamo addestrarlo per ottenere dei risultati validi? Una soluzione ricorrente è quella della \textbf{retropropagazione dell'errore}, o backpropagation. Durante questo processo, la rete neurale calcola il gradiente dell'errore (ottenuto da una funzione di \textit{loss}) sull'output, rispettivamente ai vari pesi degli strati. Questo permette alla rete neurale di individuare quali nodi hanno più effetto sulla generazione dell'errore, e di conseguenza, regolarne i pesi per ridurre l'errore. Fatto ciò sullo strato più vicino all'output, si tratta solo di ripetere il procedimento "\textit{a salire}" per ogni layer della rete neurale.
 \section{Assistenti vocali}
 Gli assistenti vocali sono software in grado di interpretare dialoghi umani e rispondere attraverso voci sintetizzate. Alcuni esempi famosi sono Apple Siri, Amazon Alexa, Google Assistant. Gli utenti possono effettuare domande, controllare dispositivi domotici, e svolgere un numero di operazioni in continua espansione \cite{article:introduction_to_va}.Il software è costantemente in attesa di una \textit{wake word}; una volta riconosciuta questa parola, si mette in ascolto di comandi. La richiesta viene quindi tradotta in testo tramite un motore di \textit{Speech To Text} ed interpretata dal software. Questa è senz'altro la parte più complessa: il compito di interpretazione di linguaggio naturale è reso complesso dalle svariate sfaccettature che ogni diversa lingua presenta. Interpretata la richiesta, l'assistente procede con le operazioni collegate, e prepara una risposta testuale da dare all'utente. Questa risposta verrà poi sintetizzata in audio da un motore di \textit{Text To Speech}. I moderni dispositivi di assistenza vocale come il Google Home o l'Amazon Echo si appoggiano a server in cloud per l'interpretazione delle richieste: questo permette di ridurne notevolmente le dimensioni ed i requisiti tecnici.
 Lo sviluppo, negli ultimi anni, di nuove tecniche di ML, unite ad un grande incremento delle potenze di calcolo e alla disponibilità di vastissimi \textit{dataset linguistici}, hanno permesso grandi miglioramenti nella tecnologia, ma soprattutto l'applicazione ad ambiti, fino a qualche anno fa, impensabili.
@@ -31,7 +58,7 @@ Un report \cite{article:voicebot_research} di Voicebot, organizzazione per la di
         \includegraphics[width=0.8\columnwidth]{images/consumer-interest-in-voice-assistants-for-healthcare-use-cases-by-age.png}
     \end{center}
     \caption{Interesse dei consumatori negli assistenti vocali in ambito medico, per fasce di età}
-    \label{fig:consumer-interest}
+    \label{fig:consumer-interest-forage}
 \end{figure}
 Un altro esempio interessante di applicazione della tecnologia in ambito medico è \textit{Dragon Medical Virtual Assistant} rilasciato da \textbf{Nuance}, una suite di strumenti vocali capaci di creare cartelle cliniche, eseguire diagnostica sul paziente, fornire risultati in diretta di ricerche mediche, supportare le operazioni di radiologia.
 \section{Triage}
