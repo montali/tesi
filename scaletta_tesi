@@ -4,21 +4,17 @@
     - Neural Networks
   - Analisi sull'utilizzo degli assistenti vocali
     - Assistenti vocali in ambito medico
-  - Triage
-    - Definizione di triage e trasformazione del suo significato
-    - Triage e COVID19
-- Assistenti vocali
-  - Funzionamento generale
-  - Rapporto con il ML
+  - Assistenti vocali
+    - Funzionamento
 - Mycroft
   - Introduzione
   - Stack di funzionamento
-  - Speech to Text
-    - STT di Google, bucketized per la privacy
-      - Perché la privacy in ambito ospedaliero è così importante
-  - Riconoscimento degli intent
-    - Padatious vs. Adapt
-  - Text To Speech
+    - Speech to Text
+      - STT di Google, bucketized per la privacy
+        - Perché la privacy in ambito ospedaliero è così importante
+    - Riconoscimento degli intent
+      - Padatious vs. Adapt
+    - Text To Speech
   - GUI
 - Realizzazione di Skills
   - Intents e Padatious
@@ -27,16 +23,15 @@
   - Multilingua
   - Sviluppo della GUI
   - Output della scheda medica 
-  - Possibilità di inference sui dati dei sintomi
-- Applicabilità
-  - Requisiti tecnici
-  - Possibilità di sperimentazione in ospedale
-  - Feedback/Test??
 - Possibilità di inference sulle conversazioni
   - Classificazione del testo
     - Dataset di trascrizioni
     - Vettorizzazione del testo
     - Allenamento di una rete neurale
     - Inference
+- Applicabilità
+  - Requisiti tecnici
+  - Possibilità di sperimentazione in ospedale
+  - Feedback/Test??
 - Conclusioni
 
