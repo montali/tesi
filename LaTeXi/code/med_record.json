@@ -1,0 +1,18 @@
+{
+  "can_talk": "yes",
+  "main_symptom": "breathing",
+  "code": "red",
+  "fever": 38.7,
+  "has_sore_throat": "yes",
+  "has_cold": "no",
+  "has_breathing_difficulties": "yes",
+  "has_cough": "yes",
+  "has_had_contacts": "yes",
+  "misses_taste": "yes",
+  "covid_score": 22.6304,
+  "symptom_declaration": "ho il fiatone",
+  "age": 21,
+  "other_symptoms": "ho un po' di mal di testa",
+  "pain_index": "8",
+  "full_name": "marco rossi"
+}
