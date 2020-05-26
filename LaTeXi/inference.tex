@@ -1,0 +1,222 @@
+\chapter{Possibilità di inference tramite reti neurali}
+\label{chap:inference}
+Le moderne tecnologie di intelligenza artificiale espandono continuamente le possibilità di nuove applicazioni nell'interazione uomo-macchina.
+Questo capitolo si occupa di studiare le tecnologie necessarie ad attuare un processo di classificazione dei pazienti in base a conversazioni avute con un bot, ma anche con un medico.
+L'obiettivo è semplice: data in input la trascrizione di una conversazione, vogliamo ottenere in output il reparto al quale il paziente andrà assegnato.
+\section{Classificazione del testo}
+Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processo del linguaggio naturale. Vorremmo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale (che sarà necessario \textit{tradurre} in termini matematici) ed un output che indichi una spcifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di esprimere questo dataset in termini matematici, gli unici \textit{comprensibili} da un computer. Dopodiché, ci occuperemo di trovare un algoritmo matematico che approssimi le corrispondenze.
+\subsection{Dataset di trascrizioni}
+È fondamentale trovare un dataset con cardinalità notevole e poco rumore. Online sono disponibili molti progetti di dataset medici, ma le stringenti leggi sulla privacy impongono grandi limitazioni sui suddetti. Sfruttando però siti di \textbf{sample di trascrizioni mediche}, come \textit{MTSamples}, è possibile ottenere delle trascrizioni curate e verosimili, categorizzate in base al reparto di appartenenza. Trovando un modo di automatizzare l'operazione di download dei suddetti, ad esempio attraverso \textbf{Selenium}, riusciremo ad ottenere un dataset valido, verosimile, e con poco rumore, essendo utilizzato da professionisti medici per spunti e studi. Effettuando lo scraping da \textit{MTSamples} è possibile ottenere un dataset contenente poco meno di 5000 records, cifra bassa ma sufficiente per sperimentare le tecniche di ML. Fatto ciò, bisognerà però escludere dal set tutte quelle trascrizioni che non apportano valore alla nostra ricerca: ad esempio, non saremo interessati agli elettrocardiogrammi. Un modo rapido per filtrare i dati è quello di tenere le sole righe della tabella la cui trascrizione contiene il termine \textit{HISTORY}, ossia le patologie preesistenti nel paziente. I record si riducono così a poco meno di 2000.
+Un record di esempio potrebbe essere così costruito:
+\begin{table}[h]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        description:          & Consult for laparoscopic gastric bypass.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             \\
+        medical$\_$specialty: & Bariatrics                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           \\
+        transcription:        & PAST MEDICAL HISTORY:, He has difficulty climbing stairs, difficulty with airline seats, tying shoes, used to public seating, and lifting objects off the floor.  He exercises three times a week at home and does cardio.  He has difficulty walking two blocks or five flights of stairs.  Difficulty with snoring.  He has muscle and joint pains includingknee pain, back pain, foot and ankle pain, and swelling.  He has gastroesophageal reflux disease.,PAST SURGICAL HISTORY:, Includes reconstructive surgery on his right hand 13 years ago.  ,SOCIAL HISTORY:, He is currently single.  He has about ten drinks a year.  He had smoked significantly up until several months ago.  He now smokes less than three cigarettes a day.,FAMILY HISTORY:, Heart disease in both grandfathers, grandmother with stroke, and a grandmother with diabetes.  Denies obesity and hypertension in other family members.,CURRENT MEDICATIONS:, None.,ALLERGIES:,  He is allergic to Penicillin.,MISCELLANEOUS/EATING HISTORY:, He has been going to support groups for seven months with Lynn Holmberg in Greenwich and he is from Eastchester, New York and he feels that we are the appropriate program.  He had a poor experience with the Greenwich program.  Eating history, he is not an emotional eater.  Does not like sweets.  He likes big portions and carbohydrates.  He likes chicken and not steak.  He currently weighs 312 pounds.  Ideal body weight would be 170 pounds.  He is 142 pounds overweight.  If ,he lost 60 of his excess body weight that would be 84 pounds and he should weigh about 228.,PHYSICAL EXAMINATION:, He is alert and oriented x 3.  Cranial nerves II-XII are intact.  Afebrile.  Vital Signs are stable. \\
+        keywords:             & bariatrics, laparoscopic gastric bypass, weight loss programs, gastric bypass, atkin's diet, weight watcher's, body weight, laparoscopic gastric, weight loss, pounds, months, weight, laparoscopic, band, loss, diets, overweight, lost                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             \\
+    \end{tabularx}
+\end{table}
+\subsection{Inference sulle trascrizioni}
+Per prima cosa, potremmo tentare di addestrare la nostra rete neurale sulla trascrizione testuale del paziente, per prevedere il reparto. Queste trascrizioni sono lunghe ed eterogenee, quindi non ci aspettiamo un'accuratezza troppo alta.
+\subsubsection{Preparazione del dataset}
+Dopo aver importato il dataset in formato CSV, lo inseriremo in un dataset \textbf{pandas} e terremo solo i record la cui trascrizione contiene \textit{HISTORY}:
+\begin{minted}{python}
+transcriptions = pd.read_csv("/content/drive/My Drive/Dataset/mtsamples.csv")
+histories = transcriptions[transcriptions.transcription.str.contains("HISTORY", na=False)]
+\end{minted}
+Dopodiché, sarà necessario ottenere delle label numeriche dalle classi testuali riportate nei samples. Sfrutteremo quindi la libreria \texttt{preprocessing} di \textit{SciKit Learn}, più precisamente la classe \texttt{LabelEncoder}:
+\begin{minted}{python}
+le = preprocessing.LabelEncoder()
+histories["medical_specialty"] = histories.apply(lambda x : x["medical_specialty"].strip(), axis='columns')
+classes = le.fit(histories["medical_specialty"])
+histories["class"] = histories.apply(lambda x : le.transform([x["medical_specialty"]]), axis='columns')
+\end{minted}
+Stampando la dimensione di \texttt{le.classes$\_$} contenuta nell'attributo \texttt{size}, scopriamo che il dataset ha 38 classi diverse.
+Alcune righe della tabella contengono dei NaN, valori nulli che possono causare errori. Per questo, vanno rimossi. Inoltre, è utile rimuovere le stopwords, ossia quelle parole che non apportano valore significativo al testo, come \textit{che, io, lui, il, la...} Per fare ciò, sfruttiamo la libreria \texttt{gensim.parsing.preprocessing}.
+\begin{minted}{python}
+histories = histories.dropna()
+histories["transcription"] = histories.apply(lambda x : remove_stopwords(x["transcription"]), axis='columns')
+y = histories.apply(lambda x : x["class"][0], axis = 'columns')
+y = y.values
+\end{minted}
+\subsubsection{Vettorizzazione del dataset}
+Abbiamo ora un dataset testuale, è necessario esprimerlo in termini numerici per poter addestrare la rete. Per questo, procediamo alla \textbf{vettorizzazione del testo}, ossia la trasposizione di un testo in forma vettoriale. Esistono varie soluzioni a questo problema, come la creazione di \textit{sparse arrays}, ossia vettori contenenti un grande numero di 0, e 1 nel caso una parola sia presente.
+Se ad esempio avessimo un dataset di due frasi, \textit{"mi piacciono le reti neurali"} e \textit{"non mi piacciono i serpenti"}, la rappresentazione della prima frase sarebbe la seguente:
+\begin{table}[]
+    \begin{tabular}{llllllll}
+        non & piacciono & mi & i & delfini & neurali & reti & le \\
+        0   & 1         & 1  & 0 & 0       & 1       & 1    & 1
+    \end{tabular}
+\end{table}
+Questo, però, porta ad un problema: ci sono parole molto più significative, come "reti" o "delfini", rispetto a "non" o "le". Un primo passo verso la risoluzione di questo problema è la rimozione di queste stopwords. Ma esiste un'idea interessante che ci permette di migliorare le performance: più una parola è presente nel dataset, meno sarà significativa. Vogliamo per questo dare più importanza a quelle parole che compaiono raramente nel testo. TF-IDF serve esattamente a questo. Definiamo la quantità $tf_{i,j}$ come il rapporto tra il numero di occorrenze del termine $i$ nel documento $j$ ed il numero di termini totali del documento:
+\begin{displaymath}
+    tf_{i,j}=\frac{n_{i,j}}{|d_j|}
+\end{displaymath}
+Anche il fattore IDF è utile a determinare l'importanza di un termine: rappresenta infatti l'importanza generale del termine $i$ nella collezione. Lo troviamo calcolando il logaritmo della divisione tra il numero di documenti $j$ nella collezione ed il numero di documenti che contengono il termine $i$:
+\begin{displaymath}
+    idf_i=log\frac{|D|}{|\left\{d:i\in d\right\}|}
+\end{displaymath}
+Infine,
+\begin{displaymath}
+    (tf-idf)_{i,j} = tf_{i,j} \times idf_i
+\end{displaymath}
+La libreria \textit{SciKit Learn} fornisce un metodo che accorpa la vettorizzazione in sparse array (\texttt{CountVectorizer}) e l'applicazione al suddetto della funzione TF-IDF per regolarne i pesi:
+\begin{minted}{python}
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(histories["transcription"].to_numpy())
+\end{minted}
+Ora, possiamo dividere il dataset in \textit{training} e \textit{test}, in modo da poter verificare il corretto addestramento della rete:
+\begin{minted}{python}
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+\end{minted}
+\subsubsection{Costruzione della rete neurale}
+Per costruire la rete neurale, sfruttiamo la libreria \textbf{Keras} fornita da \textbf{TensorFlow}. Questa libreria permette di definire reti neurali con molta semplicità. Sappiamo che il vocabolario in input è composto da 15875 termini, e le classi in output sono 38. Inseriamo strati di dimensione decrescente, tutti con attivazione ReLU e dropout di $0.3$. L'ultimo strato avrà attivazione softmax: quest'ultima è necessaria per la task di classificazione, permettendo un output di probabilità di appartenenza alle classi, che avrà somma $1$.
+\begin{minted}{python}
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import np_utils
+def build_model_keras():
+    model = Sequential()
+    model.add(Dense(256, input_dim=15875, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(150, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(100, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(80, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(60, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(38, activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.summary()
+    return model
+
+estimator = KerasClassifier(build_fn=build_model_keras, epochs=20, batch_size=128)
+estimator.fit(X_train, y_train)
+\end{minted}
+Ottenendo, quindi:
+\begin{minted}{shell}
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense_65 (Dense)             (None, 256)               4064256   
+_________________________________________________________________
+dropout_56 (Dropout)         (None, 256)               0         
+_________________________________________________________________
+dense_66 (Dense)             (None, 200)               51400     
+_________________________________________________________________
+dropout_57 (Dropout)         (None, 200)               0         
+_________________________________________________________________
+dense_67 (Dense)             (None, 200)               40200     
+_________________________________________________________________
+dropout_58 (Dropout)         (None, 200)               0         
+_________________________________________________________________
+dense_68 (Dense)             (None, 150)               30150     
+_________________________________________________________________
+dropout_59 (Dropout)         (None, 150)               0         
+_________________________________________________________________
+dense_69 (Dense)             (None, 100)               15100     
+_________________________________________________________________
+dropout_60 (Dropout)         (None, 100)               0         
+_________________________________________________________________
+dense_70 (Dense)             (None, 80)                8080      
+_________________________________________________________________
+dropout_61 (Dropout)         (None, 80)                0         
+_________________________________________________________________
+dense_71 (Dense)             (None, 60)                4860      
+_________________________________________________________________
+dropout_62 (Dropout)         (None, 60)                0         
+_________________________________________________________________
+dense_72 (Dense)             (None, 38)                2318      
+=================================================================
+Total params: 4,216,364
+Trainable params: 4,216,364
+Non-trainable params: 0
+\end{minted}
+Infine, verifichiamo l'accuracy sui dati di test.
+\begin{minted}{python}
+from sklearn import metrics
+print ("Predict on test data ... ")
+y_pred = estimator.predict(X_test)
+y_pred_converted = le.inverse_transform(y_test)
+predictions = np.column_stack((y_pred, y_test))
+print("Accuracy score: "+ str(metrics.accuracy_score(y_test, y_pred)))
+\end{minted}
+L'accuracy sui dati di test è risultata intorno al $30\%$, non sufficiente per analisi affidabili. È risultato inoltre molto evidente come, non essendo questo dataset particolarmente grande, il rischio di overtraining sia decisamente verosimile. Con overtraining intendiamo un fenomeno per il quale l'addestramento sui dati di training sembra dare un'accuratezza alta, ma quando calcolata sui dati di test risulta pessima. Questo accade perché il modello si adatta troppo ai dati di training, risultando poco generalizzabile.
+Potremmo però pensare di utilizzare, al posto delle trascrizioni, le keywords fornite nel dataset.
+\subsection{Inference sulle keywords}
+Si potrebbe quindi pensare di effettuare l'inference non più sul testo della conversazione, ma solo su alcune parole chiave estrapolate dal suddetto. Questa pratica, in linea teorica, riduce nettamente il rumore sul dataset generato da tutti quei termini, nel testo, che non apportano informazioni sulla sintomatologia.
+\subsubsection{Preparazione dei dati e del modello}
+Procedendo con le stesse tecnologie di cui sopra, vettorizziamo il testo tramite \texttt{TfidfVectorizer}, e manteniamo una rete neurale costruita con Keras, dalla forma simile:
+\begin{minted}{python}
+def build_model_keras():
+    model = Sequential()
+    model.add(Dense(256, input_dim=5814, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(150, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(100, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(80, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(60, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(39, activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.summary()
+    return model
+\end{minted}
+Ottenendo, quindi:
+\begin{minted}{shell}
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+dense_94 (Dense)             (None, 256)               1488640   
+_________________________________________________________________
+dropout_82 (Dropout)         (None, 256)               0         
+_________________________________________________________________
+dense_95 (Dense)             (None, 200)               51400     
+_________________________________________________________________
+dropout_83 (Dropout)         (None, 200)               0         
+_________________________________________________________________
+dense_96 (Dense)             (None, 200)               40200     
+_________________________________________________________________
+dropout_84 (Dropout)         (None, 200)               0         
+_________________________________________________________________
+dense_97 (Dense)             (None, 150)               30150     
+_________________________________________________________________
+dropout_85 (Dropout)         (None, 150)               0         
+_________________________________________________________________
+dense_98 (Dense)             (None, 100)               15100     
+_________________________________________________________________
+dropout_86 (Dropout)         (None, 100)               0         
+_________________________________________________________________
+dense_99 (Dense)             (None, 80)                8080      
+_________________________________________________________________
+dropout_87 (Dropout)         (None, 80)                0         
+_________________________________________________________________
+dense_100 (Dense)            (None, 60)                4860      
+_________________________________________________________________
+dropout_88 (Dropout)         (None, 60)                0         
+_________________________________________________________________
+dense_101 (Dense)            (None, 39)                2379      
+=================================================================
+Total params: 1,640,809
+Trainable params: 1,640,809
+Non-trainable params: 0
+\end{minted}
+Questa volta, avremo in input 5814 features (equivalente alla cardinalità dell'insieme dei termini), ed in output 39 classi.
+\subsubsection{Risultati}
+Questa volta le prestazioni sono decisamente più alte: con la configurazione di cui sopra, l'accuratezza sul test set è di più del $75\%$. Questo risultato apre le porte a tantissime possibilità tecnologiche per i prossimi anni. Oltre alla creazione di assistenti vocali e chatbot, anche l'autodiagnosi di patologie sarebbe più semplice e gioverebbe al sistema sanitario, spesso in situazioni di sovraccarico. Per esempio, servizi di triage online per la comprensione dei sintomi e delle patologie sono già possibili. Con l'evoluzione della visione digitale, e l'aumento dei dispositivi wearable, con la possibilità di tenere sempre sotto controllo i parametri vitali, in futuro la coesione tra medicina ed informatica sarà sempre più forte.
