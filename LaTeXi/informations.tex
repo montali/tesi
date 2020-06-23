@@ -1,9 +1,9 @@
 \chapter{Richieste di informazioni da parte degli utenti}
 \label{chap:informations}
-I casi d'uso di uno strumento come questo assistente vocale potrebbero però non fermarsi al mero indirizzamento di pazienti. Infatti, potremmo plausibilmente aspettarci che gli utenti desiderino anche ottenere informazioni di carattere medico senza doversi per forza rivolgere ad un dottore.
+I casi d'uso di uno strumento come questo assistente vocale potrebbero però \textbf{non fermarsi al mero indirizzamento di pazienti}. Infatti, potremmo plausibilmente aspettarci che gli utenti desiderino anche \textbf{ottenere informazioni di carattere medico} senza doversi per forza rivolgere ad un dottore.
 \section{Enciclopedia medica del Ministero della Salute}
-Pare ovvio sottolineare che le fonti delle informazioni riferite ai pazienti debbano essere il più affidabili possidbile. Affidarsi a siti web come Wikipedia, per quanto comodo possa essere, è rischioso: le informazioni possono essere modificate da chiunque, anche e soprattutto persone poco qualificate.
-Esiste però, in rete, una risorsa sconosciuta ai più, ma senz'altro interessante per i nostri scopi: l'enciclopedia medica del Ministero della Salute, accessibile sul sito del suddetto.
+Pare ovvio sottolineare che le fonti delle informazioni riferite ai pazienti debbano essere \textbf{il più affidabili possibile}. Affidarsi a siti web come Wikipedia, per quanto comodo possa essere, è rischioso: le informazioni possono essere modificate da chiunque, anche e soprattutto persone poco qualificate.
+Esiste però, in rete, una risorsa sconosciuta ai più, ma senz'altro interessante per i nostri scopi: l'\textbf{enciclopedia medica del Ministero della Salute}, accessibile sul sito del suddetto.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.8\columnwidth]{images/informations/MinSalute.png}
@@ -12,13 +12,13 @@ Esiste però, in rete, una risorsa sconosciuta ai più, ma senz'altro interessan
     \label{fig:min-salute}
 \end{figure}
 \subsection{Utilizzo dell'enciclopedia}
-Si potrebbe inizialmente pensare di trascrivere le informazioni dal sito: questo non è però certamente un approccio furbo. Vorremmo allora automatizzare l'interazione con il sito web, in modo da ottenere i dati in modo autonomo. Viene, in nostro soccorso, il framework \textbf{Selenium}.
+Si potrebbe inizialmente pensare di trascrivere le informazioni dal sito: questo non è però certamente un approccio efficiente. Vorremmo allora automatizzare l'interazione con il sito web, in modo da ottenere i dati in modo autonomo. Viene, in nostro soccorso, il framework \textbf{Selenium}.
 \subsubsection{Selenium}
-Selenium è un framework nato con lo scopo di testare applicazioni web. Selenium è utilizzabile tramite un IDE proprietario, disponibile come estensione per Mozilla Firefox e Google Chrome, ma anche tramite scripts che interagiscono con \textbf{Selenium WebDriver}. Quest'ultimo accetta comandi in \textit{Selenese} o tramite una \textit{Client API}, e li trasmette ad un browser che ne raccoglie i risultati. È possibile definire questi scripts di testing in linguaggi diversi dal Selenese: dalla versione 2.0, Selenium WebDriver è totalmente implementato e supportato in Python, Ruby, Java e C\#. Durante il progetto abbiamo utilizzato la versione Python, installabile tramite PIP:
+Selenium è un framework nato con lo scopo di testare applicazioni web. È utilizzabile tramite un IDE proprietario, disponibile come estensione per Mozilla Firefox e Google Chrome, ma anche tramite scripts che interagiscono con \textbf{Selenium WebDriver}. Quest'ultimo accetta comandi in \textit{Selenese} o tramite una \textit{Client API}, e li trasmette ad un browser che ne raccoglie i risultati. È possibile definire questi scripts di testing in linguaggi diversi dal Selenese: dalla versione 2.0, Selenium WebDriver è totalmente implementato e supportato in Python, Ruby, Java e C\#. Durante il progetto abbiamo utilizzato la versione Python, installabile tramite PIP:
 \begin{minted}[]{shell}
     pip3 install -U selenium
 \end{minted}
-Dopo l'installazione di Selenium, è ovviamente necessario anche un driver per interfacciarsi con il browser. Quello per Firefox è ad esempio \textbf{GeckoDriver}, quello per Chrome \textbf{ChromeDriver}. Ora, definire script per l'automazione di applicazioni web è semplicissimo. Creando un oggetto tramite \texttt{webdriver.Firefox()}, avremo la possibilità di inviare comandi al browser ed interagire con la pagina web. Per fare ciò, ci basta selezionare un elemento tramite la sua classe CSS, il suo ID, un XPath: \texttt{find\_element\_by\_class\_name("nav-tabs")}. Fatto ciò, basta, ad esempio, chiamare il metodo \texttt{click()} sull'elemento. È anche possibile eseguire codice JavaScript: sul sito del Ministero della Salute, ad esempio, per disattivare il popup contenente le normative sui cookies sarà sufficiente eseguire \texttt{execute\_script("setPrivacy();")}.
+Dopo l'installazione di Selenium, è ovviamente necessario anche un driver per interfacciarsi con il browser. Quello per Firefox è ad esempio \textit{GeckoDriver}, quello per Chrome \textit{ChromeDriver}. Ora, definire script per l'automazione di applicazioni web è semplice. Creando un oggetto tramite \texttt{webdriver.Firefox()}, avremo la possibilità di inviare comandi al browser ed interagire con la pagina web. Per fare ciò, ci basta selezionare un elemento tramite la sua classe CSS, il suo ID, un XPath: \texttt{find\_element\_by\_class\_name("nav-tabs")}. Fatto ciò, basta, ad esempio, chiamare il metodo \texttt{click()} sull'elemento. È anche possibile eseguire codice JavaScript: sul sito del Ministero della Salute, ad esempio, per disattivare il popup contenente le normative sui cookies sarà sufficiente eseguire \texttt{execute\_script("setPrivacy();")}.
 \subsubsection{Approccio API}
 Se i dati sul sito web cambiassero spesso, sarebbe molto utile definire un'API in modo da poter scaricare i dati al momento della richiesta. Tramite la libreria \texttt{http.server} è possibile definire una classe API (che estenda \texttt{BaseHTTPRequestHandler}), che ascolti una porta in attesa di richieste ed invii le risposte. Ad esempio, definendo un metodo \texttt{do\_GET}, esso verrà chiamato ogni qualvolta il server riceva una richiesta di tipo GET sulla porta designata. Definendo un oggetto \texttt{DataFetcher} che si occupi di gestire Selenium e l'interazione con la pagina, il metodo di risposta alla GET potrebbe essere così composto:
 \begin{minted}[]{python}
@@ -65,7 +65,7 @@ Server: BaseHTTP/0.6 Python/3.7.6
 }
 \end{minted}
 \subsubsection{Approccio periodico}
-Eseguire richieste all'API durante l'interazione con l'assistente vocale può generare ritardi fastidiosi. Siccome le informazioni sul sito web di cui sopra non vengono aggiornate spesso, può essere conveniente aggiornarle una volta al giorno e tenerle salvate in locale. Questo elimina del tutto i ritardi nel recupero delle informazioni, e ci permette un'integrazione molto più efficace in Mycroft: sapendo quali termini medici sono presenti nell'enciclopedia e quali no, il bot saprà già quali riconoscere e quali, invece, restituiranno un errore. Sfruttando come sempre Selenium, possiamo definire uno script utilizzando, in parte, il codice definito precedentemente. Basterà infatti chiamare la funzione \texttt{get\_query()} ciclicamente, una volta per termine disponibile nell'enciclopedia, ed accorpare tutti i risultati in un \textit{dictionary}, da salvare poi in JSON.
+Eseguire richieste all'API durante l'interazione con l'assistente vocale può generare \textbf{fastidiosi ritardi}. Siccome le informazioni sul sito web di cui sopra \textbf{non vengono aggiornate spesso}, può essere conveniente aggiornarle una volta al giorno e tenerle salvate in locale. Questo elimina del tutto i ritardi nel recupero delle informazioni, e ci permette un'integrazione \textbf{molto più efficace} in Mycroft: sapendo quali termini medici sono presenti nell'enciclopedia e quali no, il bot saprà già quali riconoscere e quali, invece, restituiranno un errore. Sfruttando come sempre Selenium, possiamo definire uno script utilizzando, in parte, il codice definito precedentemente. Basterà infatti chiamare la funzione \texttt{get\_query()} ciclicamente, una volta per termine disponibile nell'enciclopedia, ed accorpare tutti i risultati in un \textit{dictionary}, da salvare poi in JSON.
 \begin{minted}[]{python}
 def get_all(self):
     self.driver.get(MINISTERO_SALUTE_ENCYCLOPEDIA)
@@ -82,7 +82,7 @@ def get_all(self):
         self.driver.get(MINISTERO_SALUTE_ENCYCLOPEDIA)
     return fetched_data
 \end{minted}
-Una volta terminata l'esecuzione, ci basterà esportare i dati. Per fare ciò, utilizziamo due file: uno contenente le informazioni, uno contenente le patologie conosciute, da passare a Mycroft per il training di Padatious:
+Una volta terminata l'esecuzione, ci basterà esportare i dati. Per fare ciò, utilizziamo due file: uno contenente le \textbf{informazioni}, uno contenente le \textbf{patologie conosciute}, da passare a Mycroft per il training di Padatious:
 \begin{minted}[]{python}
 data = df.get_all()
 with open("informations.json", "w") as info_file:
@@ -91,7 +91,7 @@ with open("locale/it-it/disease.entity", "w+") as entity_file:
     for name in data:
         entity_file.write(name+"\n")
 \end{minted}
-Fatto ciò, basterà definire un intent di Mycroft con frasi come \textit{"Dammi informazioni (sul|sulla|del|della|dei|sui) {disease}"}, dove \texttt{\{disease\}} indica un riferimento al file appena definito, contenente le malattie conosciute. È importante sottolineare come queste non siano strettamente richieste: un paziente potrebbe usare delle terminologie diverse. Per questo, vorremmo che il bot cercasse la malattia con la miglior corrispondenza, piuttosto che cercarla letteralmente. In questo modo, per esempio, "Tumore ai polmoni" sarebbe comunque ricollegabile a "Tumore del polmone". Una volta riconosciuta la malattia, Mycroft dovrà verificare quali tipologie di informazioni possiede su di essa, e chiedere all'utente di scegliere, domandando, ad esempio, \textit{"Cosa ti piacerebbe sapere? Scegli tra Sintomi, Cura, Terapia"}.
+Fatto ciò, basterà definire un intent di Mycroft con frasi come \textit{"Dammi informazioni (sul|sulla|del|della|dei|sui) \{disease\}"}, dove \texttt{\{disease\}} indica un riferimento al file appena definito, contenente le malattie conosciute. È importante sottolineare come queste non siano strettamente richieste: un paziente potrebbe usare delle terminologie diverse. Per questo, vorremmo che il bot cercasse la malattia con \textbf{la miglior corrispondenza}, piuttosto che cercarla letteralmente. In questo modo, per esempio, "Tumore ai polmoni" sarebbe comunque ricollegabile a "Tumore del polmone". Una volta riconosciuta la malattia, Mycroft dovrà verificare \textbf{quali tipologie di informazioni possiede su di essa}, e chiedere all'utente di scegliere, domandando, ad esempio, \textit{"Cosa ti piacerebbe sapere? Scegli tra Sintomi, Cura, Terapia"}.
 \begin{minted}[]{python}
 # Let's find the most similar disease to what we've got
 key, result = dictionary_searcher(
@@ -122,3 +122,13 @@ Il bot è ora in grado di tenere conversazioni con i pazienti al riguardo di mal
     \item \textit{"Dimmi le cause."}
     \item \textit{"Ecco ciò che so: la celiachia è una condizione multifattoriale, [testo accorciato per motivi di stampa]"}
 \end{itemize}
+\section{Aggiornamento dei dati}
+Potrebbe configurarsi la necessità di verificare periodicamente il sito del Ministero della Salute in cerca di correzioni, modifiche, novità. Siccome la piattaforma è eseguita in ambienti Linux, uno straordinario strumento viene in nostro soccorso: \textbf{cron}. cron è un job scheduler per sistemi operativi UNIX. La sua struttura semplice permette di definire operazioni periodiche da svolgere in determinati istanti di tempo, all'interno di file detti \textbf{crontab} (\textit{cron table}). Ogni linea del crontab indica un'operazione da svolgere e gli istanti di tempo a cui farlo:
+\begin{minted}[]{shell}
+[min] [ore] [giorno] [mese] [giornodellasettimana] <comando da eseguire>
+\end{minted}
+Un asterisco sta ad indicare \textit{a tutti/e i/le ore/minuti/giorni...}. È anche possibile definire frazioni di intervalli di tempo: \texttt{*/2} verrà eseguito ad esempio una volta su due. Se quindi volessimo eseguire il fetching dei dati ogni notte, alle 02:00, basterebbe inserire nel crontab la seguente linea:
+\begin{minted}[]{shell}
+0 2 * * * cd hospital-triage-skill & python3 info_updater.py
+\end{minted}
+I più attenti potrebbero chiedersi perché non lanciare direttamente \texttt{python3 hospital-triage-skill/info\_updater.py}. Questo comando, apparentemente uguale al precedente, cela una grande differenza: non modifica la \textit{working directory} della linea di comando, che rimane la cartella home dell'utente. Essendo però i file salvati secondo un percorso relativo nel corso dello script Python, apparirebbero direttamente nella cartella home piuttosto che in quella del progetto.

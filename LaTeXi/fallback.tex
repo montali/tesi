@@ -3,7 +3,7 @@
 Sorge, dopo il lavoro svolto fino ad ora, un dubbio: cosa accadrebbe se la richiesta del paziente non fosse tra quelle previste durante la realizzazione della skill?
 Le necessità mediche delle persone sono, purtroppo, ben più vaste di quanto si possa pensare di programmare. Viene quindi utile un approccio più "statistico", applicabile grazie alle più recenti scoperte nell'ambito dell'intelligenza artificiale.
 \section{Classificazione del testo}
-Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processo del linguaggio naturale. Vorremmo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
+Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processamento del linguaggio naturale. Vorremmo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
 \section{Dataset utilizzato}
 La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ricerca di un dataset adatto alle necessità del data analyst. Purtroppo le moderne normative sulla privacy impongono la totale riservatezza dei dati medici delle persone. Esistono però, fortunatamente, dei dataset creati ad-hoc per la risoluzione di problematiche come quella qui presentata. Il dataset sfruttato per questa tesi, creato dalla \textbf{Appen}, azienda australiana specializzata in \textit{training data}, contiene audio, trascrizioni e intents di pazienti richiedenti aiuto. Tutto il dataset è in lingua inglese. Siccome la parte di Speech To Text viene gestita da Mycroft, utilizzeremo soltanto il dataset di trascrizioni ed intents. Ad esempio, alcune entries del dataset, potrebbero essere:
 \begin{table}[H]
@@ -21,6 +21,7 @@ La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ri
     \end{tabularx}
 \end{table}
 \subsection{Traduzione del dataset}
+\label{section:traduzione}
 Siccome il bot deve funzionare anche in italiano, risulta evidente la necessità di una traduzione. Potremmo pensare di utilizzare le API di Google Translate, ma la traduzione di tutti i record del dataset (circa 8000), avrebbe un prezzo non indifferente. Si potrebbe quindi risolvere automatizzando l'utilizzo dell'interfaccia web tramite uno strumento come \textit{Selenium}. Fortunatamente, esistono già librerie Python per fare esattamente questo. Tra queste, \textbf{googletrans} è la più supportata dalla comunità.
 Questa permette di definire un oggetto \texttt{Translator()} che sfruttiamo per la traduzione:
 \begin{minted}{python}
@@ -49,9 +50,9 @@ Notiamo qui che un piercing è diventato un \textit{labbro trafitto}, ma il sens
         prompt: & Difficile da respirare
     \end{tabularx}
 \end{table}
-Anche qui, notiamo un piccolo problema di traduzione: le classi come \textit{"breathing difficulties"} vengono tradotte in modo letterale. Essendo però le classi in numero ridotto, possiamo effettuare un \textit{find and replace}, passando, ad esempio, a \textit{Difficoltà respiratorie}.
+Anche qui, notiamo un piccolo problema di traduzione: le classi come \textit{"breathing difficulties"} vengono tradotte in modo letterale. Essendo però le classi in numero limitato, possiamo effettuare un \textit{find and replace}, passando, ad esempio, a \textit{Difficoltà respiratorie}.
 \section{Addestramento della rete neurale}
-Avendo ora un dataset in italiano, possiamo procedere con l'addestramento di una rete neurale che classifichi i testi. Per fare ciò, possiamo sfruttare la libreria \textbf{fastai}.
+Avendo ora un dataset in italiano, possiamo procedere con l'addestramento di una rete neurale che classifichi i testi. Per fare ciò, si è deciso di sfruttare la libreria \textbf{fastai}.
 \subsection{fastai}
 La libreria \textbf{fastai} semplifica il training e la creazione di reti neurali tramite le più recenti scoperte nell'ambito del deep learning. Tra le varie interfacce disponibili nella libreria, siamo interessati alla sezione riguardante il testo. Qui, è presente la classe \texttt{text.learner}, il cui scopo principale è addestrare un modello tramite il metodo \texttt{fit()}. Questa libreria permette inoltre di esportare suddetto modello, allo scopo di integrarlo in applicazioni senza dover effettuare il training ad ogni utilizzo. Esattamente quello che fa al nostro caso: possiamo addestrare la rete neurale una volta sola, ed utilizzare i risultati dell'addestramento a tempo indeterminato nell'assistente vocale, sostituendoli solo quando migliorati.
 \subsection{Preparazione dei dati}
@@ -89,7 +90,7 @@ Come precedentemente spiegato, Mycroft funziona riconoscendo determinati \textit
     \item Ustioni
     \item Dolori addominali
 \end{enumerate}
-Se si trattasse di una categoria esterna a queste, il paziente non potrebbe venire aiutato. Esiste però la possibilità di definire delle \textit{fallback skills}, ossia delle skill chiamate dall'assistente vocale quando la frase non viene riconosciuta dalle skill classiche. Queste hanno una priorità, e vengono chiamate nell'ordine definito da questa. Se una fallback skill riesce a risolvere la richiesta, non viene inoltrata alle altre. Vogliamo quindi ora creare un'automazione che sfrutti il modello ricavato dal natural language processing di cui abbiamo parlato precedentemente.
+Se si trattasse di una categoria esterna a queste, il paziente \textbf{non potrebbe venire aiutato}. Esiste però la possibilità di definire delle \textit{fallback skills}, ossia delle skill chiamate dall'assistente vocale quando la frase non viene riconosciuta dalle skill classiche. Queste hanno una priorità, e vengono chiamate nell'ordine definito da questa. Se una fallback skill riesce a risolvere la richiesta, non viene inoltrata alle altre. Vogliamo quindi ora creare un'automazione che sfrutti il modello ricavato dal natural language processing di cui sopra.
 \subsection{Registrazione della skill}
 La skill estende la classe \texttt{FallbackSkill}. Durante l'\textit{init} dell'oggetto, registriamo la fallback con una priorità di 10:
 \begin{minted}[]{python}

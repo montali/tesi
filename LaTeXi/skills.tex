@@ -3,10 +3,10 @@
 Mycroft permette di espandere le abilità del bot in maniera semplice: è infatti costruito modularmente, ed è in ogni momento possibile espandere o ridurre i moduli attivi.
 Questi moduli sono detti \textbf{skills}. Ogni skill è responsabile di una funzionalità: avremo ad esempio la skill del meteo, la skill che racconta barzellette o la skill che si occupa della domotica. Alla ricezione di una richiesta, Mycroft verifica gli intent e le keywords di ogni skill, attivando quella giusta.
 % TODO: flowchart con adapt+padatious
-La creazione di nuove skills è possibile grazie alla classe python \texttt{MycroftSkill}, tramite la cui espansione possiamo definire i comportamenti della skill. All'installazione di Mycroft verrà reso disponibile il \textbf{Mycroft Skills Kit}, una command line interface che permette di eseguire le operazioni fondamentali collegate alle skills Mycroft. Tramite il comando \texttt{mycroft-msk create} verrà avviata una CLI che, dopo aver richiesto al programmatore alcune informazioni, genera il \textit{boilerplate code} necessario alla realizzazione della skill. Tra le informazioni richieste avremo nome, frasi d'esempio, dialoghi di risposta, descrizioni\dots
+La creazione di nuove skills è possibile grazie alla classe Python \texttt{MycroftSkill}, tramite la cui espansione possiamo definire i comportamenti della skill. All'installazione di Mycroft verrà reso disponibile il \textbf{Mycroft Skills Kit}, una command line interface che permette di eseguire le operazioni fondamentali collegate alle skills Mycroft. Tramite il comando \texttt{mycroft-msk create} verrà avviata una CLI che, dopo aver richiesto al programmatore alcune informazioni, genera il \textit{boilerplate code} necessario alla realizzazione della skill. Tra le informazioni richieste avremo nome, frasi d'esempio, dialoghi di risposta, descrizioni\dots
 Il template viene inoltre fornito di \texttt{git}, un sistema di versioning che permette di tenere traccia delle modifiche al codice e semplificare l'interazione tra programmatori.
 \section{Struttura dei file della skill}
-La struttura delle skills è ben organizzata, e abbiamo diverse tipologie di file. Oltre a licenza e README, abbiamo tre componenti fondamentali per il funzionamento.
+La struttura delle skills è ben organizzata, e vi sono diverse tipologie di file. Oltre a licenza e README, abbiamo tre componenti fondamentali per il funzionamento.
 % TODO: dirtree
 \paragraph{Directory \texttt{locale}}
 Questa directory contiene i file dipendenti dalla lingua. Le sottocartelle seguono i tag linguistici IETF, quindi l'italiano sarà rappresentato da \texttt{it-it} e l'inglese (americano) da \texttt{en-us}. All'interno di queste, possiamo incontrare quattro tipologie di file:
@@ -70,7 +70,7 @@ def handle_breathing(self, message):
     self.med_record["code"] = "red"
     self.speak_dialog('symptoms.breath')
 \end{minted}
-Il metodo segna nell'oggetto \textit{scheda clinica} il sintomo principale, ossia problemi di respirazione, ed il codice relativo, ossia il rosso (accesso immediato alle cure). Poi, tramite il metodo \texttt{speak\_dialog} di \texttt{MycroftSkill}, pronuncia uno a caso tra i dialoghi contenuti nel file \texttt{symptoms.breath.dialog}, come
+Il metodo segna nell'oggetto \texttt{med\_record} (\textit{scheda clinica}) il sintomo principale, ossia problemi di respirazione, ed il codice relativo, ossia il rosso (accesso immediato alle cure). Poi, tramite il metodo \texttt{speak\_dialog} di \texttt{MycroftSkill}, pronuncia uno a caso tra i dialoghi contenuti nel file \texttt{symptoms.breath.dialog}, come
 \begin{itemize}
     \item \textit{"Capisco, qualche problema di respirazione."}
     \item \textit{"Ok, segno nella scheda problemi di respirazione."}
@@ -79,7 +79,7 @@ Il metodo segna nell'oggetto \textit{scheda clinica} il sintomo principale, ossi
 Da qui in poi, le operazioni sono affidate ai metodi chiamati dai decorators.
 \subsection{Decorators utilizzati}
 \subsubsection{Che cos'è un decorator?}
-Anzitutto, occorre definire il comportamento di un decorator. Esso permette di agganciare responsabilità addizionali ad un oggetto, dinamicamente. Fornisce quindi un'alternativa flessibile al \textit{subclassing}. Definire un decorator in Python significa definire dei comportamenti da eseguire prima e dopo l'esecuzione del metodo vero e proprio.
+Anzitutto, occorre definire il comportamento di un decorator. Esso permette di assegnare responsabilità addizionali ad un oggetto, dinamicamente. Fornisce quindi un'alternativa flessibile al \textit{subclassing}. Definire un decorator in Python significa definire dei comportamenti da eseguire prima e dopo l'esecuzione del metodo vero e proprio.
 \subsubsection{Applicazione del concetto al programma}
 Alcune operazioni sono, all'interno del progetto, ricorrenti. Ad esempio, la richiesta di anagrafica o di sintomi minori deve essere fatta in tutti e soli i metodi relativi alla gestione di sintomi. Alcuni di questi (quelli compatibili con il COVID19, come la tosse), avranno bisogno inoltre di approfondimenti per valutare la possibilità che il paziente sia affetto da COVID19, facendogli domande specifiche. Sono stati quindi definiti due decorators aggiuntivi:
 \paragraph{\texttt{symptom\_handler}} Questo metodo, dopo aver gestito le operazioni specifiche di un sintomo, prosegue con le procedure generali, come la richiesta dell'anagrafica, di una valutazione del dolore, di altri sintomi, e, per ultima, l'esportazione della cartella clinica.
@@ -207,7 +207,7 @@ def extract_temperature(utterance):
         return None
 \end{minted}
 \paragraph{\texttt{age\_validator}} Questo metodo, fornito al metodo \texttt{get\_response}, definisce se un'età è valida. In caso negativo, viene chiesta nuovamente.
-\paragraph{\texttt{number\_validator}} Questo metodo verifica se l'input vocale è numerico, distinguendo anche il caso in cui un \textit{sei} venga interpretato come \textit{verbo essere}e non $6$.
+\paragraph{\texttt{number\_validator}} Questo metodo verifica se l'input vocale è numerico, distinguendo anche il caso in cui un \textit{sei} venga interpretato come \textit{verbo essere} e non $6$.
 \subsection{Oggetto \texttt{med\_record}}
 Tutti i dati della procedura di triage confluiscono in un oggetto \texttt{med\_record}, in cui vengono salvati per l'inserimento nel database ospedaliero. Questo oggetto verrà poi esportato in formato JSON (\textbf{J}ava\textbf{S}cript \textbf{O}bject \textbf{N}otation) con la possibilità di essere inviato ad un'API REST del sistema esistente.
 \begin{minted}{python}
