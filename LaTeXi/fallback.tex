@@ -3,9 +3,9 @@
 Sorge, dopo il lavoro svolto fino ad ora, un dubbio: cosa accadrebbe se la richiesta del paziente non fosse tra quelle previste durante la realizzazione della skill?
 Le necessità mediche delle persone sono, purtroppo, ben più vaste di quanto si possa pensare di programmare. Viene quindi utile un approccio più "statistico", applicabile grazie alle più recenti scoperte nell'ambito dell'intelligenza artificiale.
 \section{Classificazione del testo}
-Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processamento del linguaggio naturale. Vorremmo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
+Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processamento del linguaggio naturale. Vorremo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
 \section{Dataset utilizzato}
-La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ricerca di un dataset adatto alle necessità del data analyst. Purtroppo le moderne normative sulla privacy impongono la totale riservatezza dei dati medici delle persone. Esistono però, fortunatamente, dei dataset creati ad-hoc per la risoluzione di problematiche come quella qui presentata. Il dataset sfruttato per questa tesi, creato dalla \textbf{Appen}, azienda australiana specializzata in \textit{training data}, contiene audio, trascrizioni e intents di pazienti richiedenti aiuto. Tutto il dataset è in lingua inglese. Siccome la parte di Speech To Text viene gestita da Mycroft, utilizzeremo soltanto il dataset di trascrizioni ed intents. Ad esempio, alcune entries del dataset, potrebbero essere:
+La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ricerca di un dataset adatto alle necessità del data analyst. Purtroppo le moderne normative sulla privacy impongono la totale riservatezza dei dati medici delle persone. Esistono però, fortunatamente, dei dataset creati ad-hoc per la risoluzione di problematiche come quella qui presentata. Il dataset sfruttato per questa tesi\cite{dataset:medical-speech}, creato dalla \textbf{Appen}, azienda australiana specializzata in \textit{training data}, contiene audio, trascrizioni e intents di pazienti richiedenti aiuto. Tutto il dataset è in lingua inglese. Siccome la parte di Speech To Text viene gestita da Mycroft, utilizzeremo soltanto il dataset di trascrizioni ed intents. Ad esempio, alcune entries del dataset, potrebbero essere:
 \begin{table}[H]
     \begin{tabularx}{\textwidth}{|l|X|}
         phrase: & My son had his lip pierced and it is swollen and the skin inside on his lip is grey and looks infected.
@@ -74,7 +74,7 @@ Addestriamo quindi la rete, e generiamo una confusion matrix, che permette di ve
     \caption{Confusion Matrix}
     \label{fig:confusion-matrix}
 \end{figure}
-Notiamo il formarsi di una diagonale nella tabella: questo è sintomo di un modello funzionante. Possiamo quindi ora esportare il modello per l'utilizzo futuro.
+Notiamo il formarsi di una diagonale nella tabella: questo è sintomo di un \textbf{modello funzionante}. Possiamo quindi ora esportare il modello per l'utilizzo futuro.
 \begin{minted}[]{python}
 learn.export('/content/exported_model')
 \end{minted}
