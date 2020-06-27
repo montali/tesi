@@ -65,7 +65,34 @@ data_clas = (TextList.from_csv(path, 'translations.csv',
                 .label_from_df(cols='prompt')
                 .databunch(bs=42))
 \end{minted}
-Fatto ciò, creiamo l'oggetto \texttt{text\_classifier\_learner}. Questo è basato su una Recurrent Neural Network. Scegliamo, come architettura, \texttt{AWD-LSTM}, che si è dimostrata vincente nella risoluzione di problemi di classificazione del testo simili a questo. % TODO: Può convenire spiegarla meglio? https://yashuseth.blog/2018/09/12/awd-lstm-explanation-understanding-language-model/
+Fatto ciò, creiamo l'oggetto \texttt{text\_classifier\_learner}. Questo è basato su una Recurrent Neural Network. Scegliamo, come architettura, \texttt{AWD-LSTM}, che si è dimostrata vincente nella risoluzione di problemi di classificazione del testo simili a questo.
+\subsubsection{AWD-LSTM}
+Le Recurrent Neural Networks risolvono un problema fondamentale: se avessimo un input di dimensioni variabili, come potremmo creare un modello funzionale? Si potrebbe pensare di utilizzare più reti neurali classiche, ma non esisterebbe interazione tra gli input.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/multiply-called-NN.png}
+    \end{center}
+    \caption{Reti neurali standard, chiamate più volte in base alla dimensione dell'input}
+    \label{fig:multiply-called-NN}
+\end{figure}
+La soluzione portata dalle RNN è invece utilizzare come input di una rete neurale l'output della precedente. Questa caratteristica porta un vantaggio fondamentale: la rete ha ora \textit{memoria}, e l'output non dipende più solo dall'input singolo, ma da quelli precedenti.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/unfolded-RNN.png}
+    \end{center}
+    \caption{Recurrent Neural Network, aperta}
+    \label{fig:unfolded-RNN}
+\end{figure}
+Considerando il peso $W_h$ sempre uguale, si ottiene lo schema consueto di RNN.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.3\columnwidth]{images/fallback/folded-RNN.png}
+    \end{center}
+    \caption{Recurrent Neural Network}
+    \label{fig:folded-RNN}
+\end{figure}
+LSTM sta per \textit{Long Short Term Memory}. Questa tipologia di reti neurali estende il concetto di \textit{memoria a breve termine} delle RNN. A volte, la capacità di queste ultime di avere una \textit{memoria} è molto ridotta: se il gap tra informazioni utili è stretto, la memoria risulta sufficiente, altrimenti no. Le reti LSTM, introdotte da Hochreiter e Schmidhuber nel 1997\cite{paper:hochreiter1997long}, risolvono esattamente questo problema. Questo risultato viene raggiunto modificando la struttura interna delle singole reti neurali, più in particolare del modulo \textit{ripetente}, ossia quello che gestisce il passaggio della \textit{memoria} da una cella all'altra. Questa struttura, molto semplice nelle RNN standard (si tratta solamente di una $tanh$), diventa molto più complessa: la cella decide ora quali parti della memoria conservare, e quali sostituire con quelle derivate dal nuovo input. Le strutture di reti LSTM sono svariate, ma solitamente si basano su tre \textit{regolatori}, detti \textbf{gates}: l'\textit{input gate}, l'\textit{output gate} ed il \textit{forget gate}. AWD-LSTM (\textit{ASGD Weight-Dropped LSTM}) è una tipologia di reti neurali LSTM che fa utilizzo di \textit{DropConnect} (una particolare tipologia di Dropout che azzera i pesi al posto delle attivazioni) e ASGD (\textit{Average Stochastic Gradient Descent}), una versione dell'algoritmo di SGD che tiene conto di più interazioni piuttosto che di una sola.
+\subsection{Addestramento della rete}
 Addestriamo quindi la rete, e generiamo una confusion matrix, che permette di verificare quanto errate siano le classificazioni, e quali errori sono più ricorrenti.
 \begin{figure}[H]
     \begin{center}
@@ -78,6 +105,19 @@ Notiamo il formarsi di una diagonale nella tabella: questo è sintomo di un \tex
 \begin{minted}[]{python}
 learn.export('/content/exported_model')
 \end{minted}
+Possiamo anche studiare l'accuracy nel corso delle varie epoche di training.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/Accuracy.png}
+    \end{center}
+    \caption{Tabella delle accuracies}
+    \label{fig:accuracy-table}
+\end{figure}
+Proviamo ora a predire la classe di una frase esempio, come "Sono caduto correndo":
+\begin{minted}[]{python}
+int(learn.predict("sono caduto correndo")[0])
+\end{minted}
+il risultato ottenuto è $15$, ossia la classe "Lesioni da sport".
 \section{Realizzazione di fallback skills}
 Come precedentemente spiegato, Mycroft funziona riconoscendo determinati \textit{intent} nelle richieste dell'utente. Questi sono stati da noi definiti nella skill del capitolo precedente. Abbiamo però specificato nell'introduzione che, a volte, i casi che abbiamo codificato non sono sufficienti:
 \begin{enumerate}
@@ -114,7 +154,7 @@ Carichiamo inoltre il file \texttt{classes.json}, contenente le corrispondenze t
 }
 \end{minted}
 Fatto ciò, resta da definire il comportamento del bot alla chiamata della fallback, operazione che svolgeremo con il metodo \texttt{handle\_fallback}.
-Idealmente, questo dovrà predirre la classe del sintomo, chiederne conferma al paziente, e aggiungere le informazioni alla scheda di triage.
+Idealmente, questo dovrà predire la classe del sintomo, chiederne conferma al paziente, e aggiungere le informazioni alla scheda di triage.
 \begin{minted}[]{python}
 @symptom_handler
 def handle_fallback(self, message):
@@ -132,3 +172,25 @@ def handle_fallback(self, message):
         self.med_record["code"] = symptom["code"]
 \end{minted}
 Ora il nostro bot, in caso di mancato riconoscimento del sintomo, potrà comunque indirizzare il paziente in modo automatizzato.
+\section{Esempio di conversazione}
+Riportiamo ora un esempio di conversazione realmente avvenuto.
+\begin{itemize}
+    \item \textbf{Utente:} \textit{Ho bisogno di aiuto}
+    \item \textbf{Bot:} \textit{Lei è il paziente, non un accompagnatore, corretto?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Qual è il sintomo principale?}
+    \item \textbf{Utente:} \textit{Mi è uscita la spalla mentre giocavo a golf}
+    \item \textbf{Bot:} \textit{Trattasi quindi di dolore alla spalla, dico bene?}
+    \item \textbf{Utente:} \textit{Esatto}
+    \item \textbf{Bot:} \textit{Mi potresti dire quanti anni hai?}
+    \item \textbf{Utente:} \textit{Ventidue}
+    \item \textbf{Bot:} \textit{Se c'è qualche altro sintomo che devo sapere, dimmelo ora}
+    \item \textbf{Utente:} \textit{Nient'altro}
+    \item \textbf{Bot:} \textit{Come definirebbe il suo dolore da 1 a 10?}
+    \item \textbf{Utente:} \textit{Sette}
+    \item \textbf{Bot:} \textit{Potresti dirmi il tuo nome completo?}
+    \item \textbf{Utente:} \textit{Mario Rossi}
+    \item \textbf{Bot:} \textit{Il tuo nome è Mario Rossi, giusto?}
+    \item \textbf{Utente:} \textit{Esatto}
+    \item \textbf{Bot:} \textit{Grazie per la pazienza, recati al banco YELLOW}
+\end{itemize}

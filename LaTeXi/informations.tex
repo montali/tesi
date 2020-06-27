@@ -122,6 +122,16 @@ Il bot è ora in grado di tenere conversazioni con i pazienti al riguardo di mal
     \item \textit{"Dimmi le cause."}
     \item \textit{"Ecco ciò che so: la celiachia è una condizione multifattoriale, [testo accorciato per motivi di stampa]"}
 \end{itemize}
+\section{Esempio di conversazione}
+Riportiamo ora un esempio di conversazione realmente avvenuto.
+\begin{itemize}
+    \item \textbf{Utente:} \textit{Cosa sai dirmi sul tumore al fegato?}
+    \item \textbf{Bot:} \textit{Il miglior risultato è Tumore del Fegato, è ciò che cercavi?}
+    \item \textbf{Utente:} \textit{Esatto}
+    \item \textbf{Bot:} \textit{Cosa ti piacerebbe sapere? Scegli tra Descrizione, Segni e sintomi, Cause, Diagnosi, Terapia, Prevenzione}
+    \item \textbf{Utente:} \textit{Prevenzione}
+    \item \textbf{Bot:} \textit{Questo è ciò che so: le uniche misure per ridurre le probabilità di ammalarsi di cancro al fegato sono l'adozione di stili di vita e misure di igiene che contrastino i fattori di rischio per questa forma tumorale}
+\end{itemize}
 \section{Aggiornamento dei dati}
 Potrebbe configurarsi la necessità di verificare periodicamente il sito del Ministero della Salute in cerca di correzioni, modifiche, novità. Siccome la piattaforma è eseguita in ambienti Linux, uno straordinario strumento viene in nostro soccorso: \textbf{cron}. cron è un job scheduler per sistemi operativi UNIX. La sua struttura semplice permette di definire operazioni periodiche da svolgere in determinati istanti di tempo, all'interno di file detti \textbf{crontab} (\textit{cron table}). Ogni linea del crontab indica un'operazione da svolgere e gli istanti di tempo a cui farlo:
 \begin{minted}[]{shell}

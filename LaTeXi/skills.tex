@@ -66,6 +66,7 @@ def handle_breathing(self, message):
 
     GUI: show open mouth emoji
     """
+    self.gui.show_text("[emoji rimossa per motivi di stampa]")
     self.med_record["main_symptom"] = "breathing"
     self.med_record["code"] = "red"
     self.speak_dialog('symptoms.breath')
@@ -227,3 +228,47 @@ self.med_record = {}
 \end{minted}
 Questo formato standard permette di essere integrato semplicemente con infrastrutture preesistenti. Per esempio, un paziente affetto da COVID19 potrebbe avere la seguente scheda clinica:
 \inputminted{json}{code/med_record.json}
+\section{Esempio di conversazione}
+Riportiamo ora un esempio di conversazione realmente avvenuto.
+\begin{itemize}
+    \item \textbf{Utente:} \textit{Puoi aiutarmi?}
+    \item \textbf{Bot:} \textit{Prima di tutto, è lei ad avere bisogno?}
+    \item \textbf{Utente:} \textit{Esatto}
+    \item \textbf{Bot:} \textit{Qual è il sintomo principale?}
+    \item \textbf{Utente:} \textit{Ho la febbre}
+    \item \textbf{Bot:} \textit{Hai la febbre, quindi. Ti sei misurato di recente?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Per favore, dimmi a quanto hai la febbre}
+    \item \textbf{Utente:} \textit{Trentasette e otto}
+    \item \textbf{Bot:} \textit{Mi serve qualche informazione aggiuntiva per la diagnosi. Ora ti farò alcune domande a cui rispondere sì o no. Hai male alla gola?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Soffri di raffreddore?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Noti un affaticamento quando respiri?}
+    \item \textbf{Utente:} \textit{No}
+    \item \textbf{Bot:} \textit{Hai la tosse?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Sei stato a stretto contatto con persone affette dal nuovo Coronavirus?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Fai fatica a sentire i sapori e gli odori?}
+    \item \textbf{Utente:} \textit{Sì}
+    \item \textbf{Bot:} \textit{Stiamo chiamando un medico. È possibile che tu sia affetto da COVID19. Mi potresti dire quanti anni hai?}
+    \item \textbf{Utente:} \textit{Ventidue}
+    \item \textbf{Bot:} \textit{Se hai altri sintomi da segnalare, dimmeli ora}
+    \item \textbf{Utente:} \textit{Nient'altro}
+    \item \textbf{Bot:} \textit{Come definirebbe il suo dolore da 1 a 10?}
+    \item \textbf{Utente:} \textit{Sette}
+    \item \textbf{Bot:} \textit{Potresti dirmi il tuo nome completo?}
+    \item \textbf{Utente:} \textit{Simone Montali}
+    \item \textbf{Bot:} \textit{Il tuo nome è Simone Montali, giusto?}
+    \item \textbf{Utente:} \textit{Esatto}
+    \item \textbf{Bot:} \textit{Grazie per la pazienza, recati al banco YELLOW}
+\end{itemize}
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=0.45\columnwidth]{images/skills/temperature.png}
+        \includegraphics[width=0.45\columnwidth]{images/skills/facemask.png}
+    \end{center}
+    \caption{Alcune schermate della GUI durante la diagnostica del COVID19}
+    \label{fig:gui-screens}
+\end{figure}
