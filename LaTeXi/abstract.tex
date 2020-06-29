@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{upgreek}
+\usepackage{amssymb}
+\usepackage[normalem]{ulem}
+\newcommand{\numpy}{{\tt numpy}}    % tt font for numpy
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+\begin{document}
+
+% ========== Edit your name here
+\author{Simone Montali - matr. 288144}
+\title{Realizzazione di un assistente vocale per il triage ospedaliero}
+\date{09 luglio 2020}
+\maketitle
+
+\medskip
+\section*{Sommario}
+Questa tesi si pone l'ambizioso obiettivo di poter \textbf{automatizzare le procedure di triage} nei pronto soccorso italiani ed esteri, tramite la creazione di un assistente vocale con cui i pazienti possano interagire per risolvere le proprie necessità mediche. Il COVID19 ha reso necessarie procedure di contenimento sempre più stringenti, che difficilmente verranno abbandonate in futuro. Per questo, \textbf{ridurre l'interazione} tra il personale sanitario ed i pazienti potrebbe essere un grande passo in avanti per la sicurezza di tutti. Con triage, termine nato in ambito di emergenze mediche oggi utilizzato anche negli ospedali, si intende la classificazione dei pazienti in base all'\textbf{urgenza delle loro patologie} ed alla \textbf{probabilità di sopravvivenza} che hanno. Questa procedura è oggi svolta da infermieri, ma potrebbe in parte essere affidata ad un computer. Spesso, però, gli utilizzatori dei servizi medici \textbf{non sanno utilizzarne uno}: la necessità di un'interazione più semplice è palese. Per questo, un assistente vocale potrebbe risolvere questa problematica: l'interazione vocale è semplice e chiara per tutti.\\
+Per lo sviluppo di questo strumento si è fatto uso del software \textbf{Mycroft}, un assistente vocale open source, con skills modulari espandibili tramite Python. Sono state definite due nuove skills, che ascoltano il paziente e svolgono la procedura di classificazione: cercano di comprendere a quale \textbf{macrocategoria} appartengono i sintomi, domandano al paziente informazioni riguardo a \textbf{come si sente}, come \textit{dolore}, \textit{febbre}, \textit{capacità di camminare}, ed infine approfondiscono l'\textbf{anagrafica}, con nome, età, etc\dots\\
+Vista la difficoltà del periodo, si è configurata la necessità di effettuare \textbf{diagnostica alla ricerca di sintomi del COVID19}. Per questo, quando il paziente lamenta patologie compatibili con il suddetto, viene attivata un'automazione che tenta di capire, con una determinata accuratezza, quanto il paziente potrebbe esserne affetto.\\
+Infine, i pazienti potrebbero anche desiderare \textbf{informazioni di carattere medico}, senza doversi per forza far ricoverare: è stata quindi implementata la possibilità di consultare le informazioni disponibili sull'Enciclopedia Medica del Ministero della Salute. Per ottenere le suddette, è stato creato uno \textbf{scraper} che consulta il sito e le salva o invia tramite un'API REST.\\
+Questo insieme di strumenti ha \textbf{necessità hardware} molto permissive: è possibile installarlo su un Raspberry Pi, su un vecchio computer o anche su un dispositivo Android. Questo rende possibile l'upgrade a strumentazioni simili anche per le realtà più in difficoltà, dentro e fuori dall'Italia.\\
+L'installazione di un bot simile a questo negli ospedali ne migliorerebbe la sicurezza, l'efficienza, i costi e \textbf{la possibilità di salvare vite}.
+\end{document}
