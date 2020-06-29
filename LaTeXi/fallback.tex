@@ -3,9 +3,9 @@
 Sorge, dopo il lavoro svolto fino ad ora, un dubbio: cosa accadrebbe se la richiesta del paziente non fosse tra quelle previste durante la realizzazione della skill?
 Le necessità mediche delle persone sono, purtroppo, ben più vaste di quanto si possa pensare di programmare. Viene quindi utile un approccio più "statistico", applicabile grazie alle più recenti scoperte nell'ambito dell'intelligenza artificiale.
 \section{Classificazione del testo}
-Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processamento del linguaggio naturale. Vorremo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
+Esiste, nell'intelligenza artificiale, una branca che si occupa di \textbf{Natural Language Processing}, ossia processamento del linguaggio naturale. La nostra necessità è, con questo insieme di tecniche, creare un classificatore: vorremo quindi trovare un \textit{sistema} che approssimi al meglio la corrispondenza tra un input testuale ed un output che indichi una specifica classe. Il processo sarà quindi diviso in più parti: per primo, dovremo trovare un dataset testuale già categorizzato, o categorizzarne manualmente uno. Fatto ciò, dovremo trovare un modo di poter addestrare il computer a riconoscere i \textit{pattern} che legano un determinato testo alla sua classe d'appartenenza.
 \section{Dataset utilizzato}
-La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ricerca di un dataset adatto alle necessità del data analyst. Purtroppo le moderne normative sulla privacy impongono la totale riservatezza dei dati medici delle persone. Esistono però, fortunatamente, dei dataset creati ad-hoc per la risoluzione di problematiche come quella qui presentata. Il dataset sfruttato per questa tesi\cite{dataset:medical-speech}, creato dalla \textbf{Appen}, azienda australiana specializzata in \textit{training data}, contiene audio, trascrizioni e intents di pazienti richiedenti aiuto. Tutto il dataset è in lingua inglese. Siccome la parte di Speech To Text viene gestita da Mycroft, utilizzeremo soltanto il dataset di trascrizioni ed intents. Ad esempio, alcune entries del dataset, potrebbero essere:
+La presenza in rete di siti web come \textit{Kaggle} semplifica nettamente la ricerca di un dataset adatto alle necessità del data analyst. Le moderne normative sulla privacy impongono, giustamente, la totale riservatezza dei dati medici delle persone. Esistono però, fortunatamente, dei dataset creati ad-hoc per la risoluzione di problematiche come quella qui presentata. Il dataset sfruttato per questa tesi\cite{dataset:medical-speech}, creato dalla \textbf{Appen}, azienda australiana specializzata in \textit{training data}, contiene audio, trascrizioni e intents di pazienti richiedenti aiuto. Tutto il dataset è in lingua inglese. Siccome la parte di Speech To Text viene gestita da Mycroft, utilizzeremo soltanto il dataset di trascrizioni ed intents. Ad esempio, alcune entries del dataset, potrebbero essere:
 \begin{table}[H]
     \begin{tabularx}{\textwidth}{|l|X|}
         phrase: & My son had his lip pierced and it is swollen and the skin inside on his lip is grey and looks infected.
@@ -70,7 +70,7 @@ Fatto ciò, creiamo l'oggetto \texttt{text\_classifier\_learner}. Questo è basa
 Le Recurrent Neural Networks risolvono un problema fondamentale: se avessimo un input di dimensioni variabili, come potremmo creare un modello funzionale? Si potrebbe pensare di utilizzare più reti neurali classiche, ma non esisterebbe interazione tra gli input.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\columnwidth]{images/fallback/multiply-called-NN.png}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/multiply-called-NN.jpg}
     \end{center}
     \caption{Reti neurali standard, chiamate più volte in base alla dimensione dell'input}
     \label{fig:multiply-called-NN}
@@ -78,7 +78,7 @@ Le Recurrent Neural Networks risolvono un problema fondamentale: se avessimo un 
 La soluzione portata dalle RNN è invece utilizzare come input di una rete neurale l'output della precedente. Questa caratteristica porta un vantaggio fondamentale: la rete ha ora \textit{memoria}, e l'output non dipende più solo dall'input singolo, ma da quelli precedenti.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\columnwidth]{images/fallback/unfolded-RNN.png}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/unfolded-RNN.jpg}
     \end{center}
     \caption{Recurrent Neural Network, aperta}
     \label{fig:unfolded-RNN}
@@ -86,7 +86,7 @@ La soluzione portata dalle RNN è invece utilizzare come input di una rete neura
 Considerando il peso $W_h$ sempre uguale, si ottiene lo schema consueto di RNN.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.3\columnwidth]{images/fallback/folded-RNN.png}
+        \includegraphics[width=0.3\columnwidth]{images/fallback/folded-RNN.jpg}
     \end{center}
     \caption{Recurrent Neural Network}
     \label{fig:folded-RNN}
@@ -96,7 +96,7 @@ LSTM sta per \textit{Long Short Term Memory}. Questa tipologia di reti neurali e
 Addestriamo quindi la rete, e generiamo una confusion matrix, che permette di verificare quanto errate siano le classificazioni, e quali errori sono più ricorrenti.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.8\columnwidth]{images/fallback/ConfusionMatrix.png}
+        \includegraphics[width=0.8\columnwidth]{images/fallback/ConfusionMatrix.jpg}
     \end{center}
     \caption{Confusion Matrix}
     \label{fig:confusion-matrix}
@@ -108,7 +108,7 @@ learn.export('/content/exported_model')
 Possiamo anche studiare l'accuracy nel corso delle varie epoche di training.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\columnwidth]{images/fallback/Accuracy.png}
+        \includegraphics[width=0.5\columnwidth]{images/fallback/Accuracy.jpg}
     \end{center}
     \caption{Tabella delle accuracies}
     \label{fig:accuracy-table}
@@ -171,9 +171,9 @@ def handle_fallback(self, message):
         self.med_record["main_symptom"] = symptom["name"]
         self.med_record["code"] = symptom["code"]
 \end{minted}
-Ora il nostro bot, in caso di mancato riconoscimento del sintomo, potrà comunque indirizzare il paziente in modo automatizzato. La conversazione è ascoltabile nei video disponibili sulla repo GitHub\cite{media:videos}.
+Ora il nostro bot, in caso di mancato riconoscimento del sintomo tramite la skill del capitolo \ref{chap:skills}, potrà comunque indirizzare il paziente in modo automatizzato.
 \section{Esempio di conversazione}
-Riportiamo ora un esempio di conversazione realmente avvenuto.
+Riportiamo ora un esempio di conversazione realmente avvenuto. La conversazione è ascoltabile nei video disponibili sulla repo GitHub\cite{media:videos}.
 \begin{itemize}
     \item \textbf{Utente:} \textit{Ho bisogno di aiuto}
     \item \textbf{Bot:} \textit{Lei è il paziente, non un accompagnatore, corretto?}

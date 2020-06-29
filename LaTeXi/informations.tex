@@ -6,7 +6,7 @@ Pare ovvio sottolineare che le fonti delle informazioni riferite ai pazienti deb
 Esiste però, in rete, una risorsa sconosciuta ai più, ma senz'altro interessante per i nostri scopi: l'\textbf{Enciclopedia Medica del Ministero della Salute}, accessibile sul sito del suddetto.
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=0.8\columnwidth]{images/informations/MinSalute.png}
+        \includegraphics[width=0.8\columnwidth]{images/informations/MinSalute.jpg}
     \end{center}
     \caption{Enciclopedia della Salute}
     \label{fig:min-salute}
@@ -82,7 +82,7 @@ def get_all(self):
         self.driver.get(MINISTERO_SALUTE_ENCYCLOPEDIA)
     return fetched_data
 \end{minted}
-Una volta terminata l'esecuzione, ci basterà esportare i dati. Per fare ciò, utilizziamo due file: uno contenente le \textbf{informazioni}, uno contenente le \textbf{patologie conosciute}, da passare a Mycroft per il training di Padatious:
+Una volta terminata l'esecuzione, ci basterà esportare i dati. Per fare ciò, utilizziamo due file: uno contenente le \textbf{informazioni}, uno contenente le \textbf{patologie conosciute}, da passare a Mycroft per il training di Padatious.
 \begin{minted}[]{python}
 data = df.get_all()
 with open("informations.json", "w") as info_file:
@@ -91,7 +91,7 @@ with open("locale/it-it/disease.entity", "w+") as entity_file:
     for name in data:
         entity_file.write(name+"\n")
 \end{minted}
-Fatto ciò, basterà definire un intent di Mycroft con frasi come \textit{"Dammi informazioni (sul|sulla|del|della|dei|sui) \{disease\}"}, dove \texttt{\{disease\}} indica un riferimento al file appena definito, contenente le malattie conosciute. È importante sottolineare come queste non siano strettamente richieste: un paziente potrebbe usare delle terminologie diverse. Per questo, vorremmo che il bot cercasse la malattia con \textbf{la miglior corrispondenza}, piuttosto che cercarla letteralmente. In questo modo, per esempio, "Tumore ai polmoni" sarebbe comunque ricollegabile a "Tumore del polmone". Una volta riconosciuta la malattia, Mycroft dovrà verificare \textbf{quali tipologie di informazioni possiede su di essa}, e chiedere all'utente di scegliere, domandando, ad esempio, \textit{"Cosa ti piacerebbe sapere? Scegli tra Sintomi, Cura, Terapia"}.
+Fatto ciò, basterà definire un intent di Mycroft con frasi come \textit{"Dammi informazioni (sul|sulla|del|della|dei|sui) \{disease\}"}, dove \texttt{\{disease\}} indica un riferimento al file appena definito, contenente le malattie conosciute. È importante sottolineare come queste non siano sempre termini precisi: un paziente potrebbe usare delle terminologie simili o sinonimi. Per questo, vorremmo che il bot cercasse la malattia con \textbf{la miglior corrispondenza}, piuttosto che cercarla letteralmente. In questo modo, per esempio, "Tumore ai polmoni" sarebbe comunque ricollegabile a "Tumore del polmone". Una volta riconosciuta la malattia, Mycroft dovrà verificare \textbf{quali tipologie di informazioni possiede su di essa}, e chiedere all'utente di scegliere, domandando, ad esempio, \textit{"Cosa ti piacerebbe sapere? Scegli tra Sintomi, Cura, Terapia"}.
 \begin{minted}[]{python}
 # Let's find the most similar disease to what we've got
 key, result = dictionary_searcher(

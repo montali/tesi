@@ -35,11 +35,14 @@
 \usepackage{algorithmic}
 \usepackage{wrapfig}
 \usepackage{amsmath}
+\newcommand{\Subject}[1]{\gdef\xmpSubject{#1}}
+\usepackage[a-1b]{pdfx}
 \usepackage[babel]{csquotes}
-\usepackage{hyperref}
+\usepackage{hyperxmp}
+\usepackage[pdfa]{hyperref}
 \usepackage{minted}
 \usepackage[htt]{hyphenat}
-\usepackage[backend=biber,bibencoding=ascii]{biblatex}
+\usepackage[backend=biber,bibencoding=ascii,sorting=none]{biblatex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,8 +54,18 @@
     colorlinks,
     linkcolor={black}, %COLORE DEI RIFERIMENTI AL TESTO
     citecolor={blue}, %COLORE DEI RIFERIMENTI ALLE CITAZIONI
-    urlcolor={blue} %COLORI DEGLI URL
+    urlcolor={blue}, %COLORI DEGLI URL,
+    pdftitle={%
+    Realizzazione di un assistente vocale per il triage ospedaliero},
+pdfsubtitle={[it]Triage semi-automatizzato per la sicurezza e la tempestività},
+pdfauthor={Simone Montali},
+pdfdate={2020-07-09},
+pdfsubject={Natural Language Processing},
+pdfkeywords={Triage ML Mycroft Ospedale Hospital},
+pdflang={it},
+pdfproducer={\@pdfcreator}
 }
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -99,13 +112,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% INFORMAZIONI PDF - PERSONALIZZARE
-\pdfinfo{%
-  /Title    (Realizzazione di un assistente vocale per il triage ospedaliero)
-  /Author   (Simone Montali)
-  /Subject  (Triage semi-automatizzato per la sicurezza e la tempestività)
-  /Keywords (Triage ML Mycroft Ospedale Hospital)
-}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -171,7 +178,7 @@ conclusioni,%
 \candidato{Simone Montali}[288144]
 
 % LOGO UNIVERSITA
-\logosede{images/logo}
+\logosede{images/logo.jpg}
 
 % DATA - MESE ANNO
 \sedutadilaurea{09 luglio 2020}
@@ -235,8 +242,8 @@ Questa tesi si pone l'ambizioso obiettivo di poter \textbf{automatizzare le proc
 Per lo sviluppo di questo strumento si è fatto uso del software \textbf{Mycroft}, un assistente vocale open source, con skills modulari espandibili tramite Python. Sono state definite due nuove skills, che ascoltano il paziente e svolgono la procedura di classificazione: cercano di comprendere a quale \textbf{macrocategoria} appartengono i sintomi, domandano al paziente informazioni riguardo a \textbf{come si sente}, come \textit{dolore}, \textit{febbre}, \textit{capacità di camminare}, ed infine approfondiscono l'\textbf{anagrafica}, con nome, età, etc\dots\\
 Vista la difficoltà del periodo, si è configurata la necessità di effettuare \textbf{diagnostica alla ricerca di sintomi del COVID19}. Per questo, quando il paziente lamenta patologie compatibili con il suddetto, viene attivata un'automazione che tenta di capire, con una determinata accuratezza, quanto il paziente potrebbe esserne affetto.\\
 Infine, i pazienti potrebbero anche desiderare \textbf{informazioni di carattere medico}, senza doversi per forza far ricoverare: è stata quindi implementata la possibilità di consultare le informazioni disponibili sull'Enciclopedia Medica del Ministero della Salute. Per ottenere le suddette, è stato creato uno \textbf{scraper} che consulta il sito e le salva o invia tramite un'API REST.\\
-Questo insieme di strumenti ha \textbf{necessità hardware} molto permissive: è possibile installarlo su un Raspberry Pi, su un vecchio computer o anche su un dispositivo Android. Questo rende possibile l'upgrade a strumentazioni simili anche per le realtà più in difficoltà, anche fuori dall'Italia.\\
-L'installazione di un bot simile a questo negli ospedali ne migliorerebbe la sicurezza, l'efficienza, i costi e la possibilità di salvare vite.
+Questo insieme di strumenti ha \textbf{necessità hardware} molto permissive: è possibile installarlo su un Raspberry Pi, su un vecchio computer o anche su un dispositivo Android. Questo rende possibile l'upgrade a strumentazioni simili anche per le realtà più in difficoltà, dentro e fuori dall'Italia.\\
+L'installazione di un bot simile a questo negli ospedali ne migliorerebbe la sicurezza, l'efficienza, i costi e \textbf{la possibilità di salvare vite}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % INDICI - ELIMINARE GLI INDICI NON NECESSARI
